@@ -86,6 +86,8 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--gold-soft); out
 .btn-main:hover { transform: translateY(-2px); }
 .btn-main:active { transform: translateY(4px); box-shadow: 0 2px 0 #9a6a14; }
 .btn-ghost { border: 2px solid rgba(244,193,79,.55); background: transparent; border-radius: 999px; padding: 12px 22px; font-family: var(--display); font-weight: 700; color: var(--gold-soft); }
+.auto-pick { display: flex; flex-direction: column; gap: 10px; }
+.auto-label { font-family: var(--display); font-weight: 800; color: var(--gold); font-size: 1rem; }
 .intro .note { font-size: .85rem; color: var(--muted); opacity: .8; }
 
 /* ---------- Reader ---------- */
@@ -204,6 +206,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--gold-soft); out
   .intro-text { align-items: center; }
   .cover-wrap { width: min(70vw, 300px, calc((100dvh - 330px) * .75)); min-width: 160px; }
   .cta-row { justify-content: center; }
+  .auto-pick { align-items: center; }
 }
 @media (max-width: 480px) {
   .tool .lbl { display: none; }
@@ -235,7 +238,14 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--gold-soft); out
       <p class="lead">24 pages en français et en arabe. Tournez les pages, écoutez l'histoire et laissez la forêt s'animer.</p>
       <div class="cta-row">
         <button class="btn-main" id="startBtn" type="button">Ouvrir le livre · افتح الكتاب</button>
-        <button class="btn-ghost" id="startAuto" type="button"><span lang="ar" dir="rtl">▶ قراءة تلقائية بالعربية</span></button>
+      </div>
+      <div class="auto-pick">
+        <div class="auto-label">▶ <span lang="ar" dir="rtl">قراءة تلقائية بالصوت</span> · Lecture automatique</div>
+        <div class="cta-row">
+          <button class="btn-ghost" type="button" data-auto="ar" lang="ar" dir="rtl">بالعربية</button>
+          <button class="btn-ghost" type="button" data-auto="fr" lang="fr">En français</button>
+          <button class="btn-ghost" type="button" data-auto="both">عربي + Français</button>
+        </div>
       </div>
       <div class="note">Touchez une image pour la voir en grand. Glissez ou utilisez les flèches pour tourner les pages.</div>
     </div>
@@ -689,15 +699,15 @@ setFx("fireflies");
 requestAnimationFrame(frame);
 
 /* ---------- start ---------- */
-function start(withAuto) {
+function start(withAuto, autoLang) {
   if (started) return;
   started = true;
   $("intro").classList.add("gone");
   unlockVoice();
   toggleMusic(true);
   if (withAuto) {
-    // automatic reading: Arabic text + Arabic narration, pages turn by themselves
-    setLang("ar");
+    // automatic reading in the chosen language(s): text + narration, pages turn by themselves
+    setLang(autoLang || "ar");
     auto = true; $("autoBtn").setAttribute("aria-pressed", "true");
     listen = true; $("listenBtn").setAttribute("aria-pressed", "true");
   }
@@ -722,7 +732,7 @@ function goHome() {
 $("homeBtn").onclick = goHome;
 $("endHome").onclick = goHome;
 $("startBtn").onclick = () => start(false);
-$("startAuto").onclick = () => start(true);
+document.querySelectorAll("[data-auto]").forEach(b => b.onclick = () => start(true, b.dataset.auto));
 addEventListener("hashchange", () => {
   const m = /^#page-(\d+)$/.exec(location.hash);
   if (m && started && +m[1] !== idx) go(Math.min(LAST, +m[1]));
