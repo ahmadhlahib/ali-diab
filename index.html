@@ -235,7 +235,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--gold-soft); out
       <p class="lead">24 pages en français et en arabe. Tournez les pages, écoutez l'histoire et laissez la forêt s'animer.</p>
       <div class="cta-row">
         <button class="btn-main" id="startBtn" type="button">Ouvrir le livre · افتح الكتاب</button>
-        <button class="btn-ghost" id="startAuto" type="button">▶ Lecture automatique</button>
+        <button class="btn-ghost" id="startAuto" type="button"><span lang="ar" dir="rtl">▶ قراءة تلقائية بالعربية</span></button>
       </div>
       <div class="note">Touchez une image pour la voir en grand. Glissez ou utilisez les flèches pour tourner les pages.</div>
     </div>
@@ -246,6 +246,9 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--gold-soft); out
   <header class="topbar">
     <div class="brand"><b lang="ar" dir="rtl">علي دياب</b><span>Ali Diab et la forêt magique</span></div>
     <div class="tools">
+      <button class="tool" type="button" id="homeBtn" title="Accueil · الرئيسية" aria-label="Accueil">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg><span class="lbl">الرئيسية</span>
+      </button>
       <div class="seg" role="group" aria-label="Langue du texte">
         <button type="button" id="lang-fr" data-lang="fr" aria-pressed="false">FR</button>
         <button type="button" id="lang-both" data-lang="both" aria-pressed="true">FR+ع</button>
@@ -289,6 +292,7 @@ button:focus-visible, a:focus-visible { outline: 3px solid var(--gold-soft); out
     <div class="cta-row">
       <button class="btn-main" id="againBtn" type="button">Relire · اقرأ من جديد</button>
       <button class="btn-ghost" id="backBtn" type="button">Revenir à la dernière page</button>
+      <button class="btn-ghost" id="endHome" type="button">الرئيسية · Accueil</button>
     </div>
   </div>
 </section>
@@ -488,7 +492,7 @@ document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-press
 $("autoBtn").onclick = () => {
   auto = !auto; $("autoBtn").setAttribute("aria-pressed", String(auto));
   clearTimeout(autoTimer);
-  if (auto && !listen) scheduleAuto();
+  if (auto) { listen = true; $("listenBtn").setAttribute("aria-pressed", "true"); speak(); }
 };
 
 /* ---------- lightbox ---------- */
@@ -691,11 +695,32 @@ function start(withAuto) {
   $("intro").classList.add("gone");
   unlockVoice();
   toggleMusic(true);
-  if (withAuto) { auto = true; $("autoBtn").setAttribute("aria-pressed", "true"); }
-  const m = /^#page-(\d+)$/.exec(location.hash);
+  if (withAuto) {
+    // automatic reading: Arabic text + Arabic narration, pages turn by themselves
+    setLang("ar");
+    auto = true; $("autoBtn").setAttribute("aria-pressed", "true");
+    listen = true; $("listenBtn").setAttribute("aria-pressed", "true");
+  }
+  const m = firstStart ? /^#page-(\d+)$/.exec(location.hash) : null;
+  firstStart = false;
   const startAt = m ? Math.min(LAST, +m[1]) : 1;
   go(startAt, { force: true });
 }
+let firstStart = true;
+function goHome() {
+  stopSpeech(); clearTimeout(autoTimer);
+  auto = false; listen = false;
+  $("autoBtn").setAttribute("aria-pressed", "false");
+  $("listenBtn").setAttribute("aria-pressed", "false");
+  $("end").hidden = true; closeLight();
+  started = false;
+  $("intro").classList.remove("gone");
+  $("intro").scrollTop = 0;
+  setFx("fireflies"); $("flash").classList.remove("on");
+  try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
+}
+$("homeBtn").onclick = goHome;
+$("endHome").onclick = goHome;
 $("startBtn").onclick = () => start(false);
 $("startAuto").onclick = () => start(true);
 addEventListener("hashchange", () => {
