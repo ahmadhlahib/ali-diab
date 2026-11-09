@@ -1,749 +1,170 @@
 <!doctype html>
-<html lang="fr">
+<html lang="ar">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta property="og:title" content="مغامرات البطل علي دياب · Les aventures d'Ali Diab">
-<meta property="og:description" content="Un livre animé en français et en arabe · كتاب متحرّك بالعربية والفرنسية">
-<meta property="og:image" content="img/p00.jpg">
+<script>
+  // Old links pointed at the forest story on this page (#page-N): send them to its reader.
+  if (/^#page-\d+$/.test(location.hash)) location.replace("read.html?s=forest" + location.hash);
+</script>
+<meta property="og:title" content="قصص علي دياب · Les histoires d'Ali Diab · Ali Diab's stories">
+<meta property="og:description" content="كتب متحرّكة بالعربية والفرنسية والإنكليزية · Livres animés · Animated storybooks">
+<meta property="og:image" content="stories/soldiers/img/p00.jpg">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
-<title>Ali Diab and the Magical Forest</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<title>Ali Diab Stories</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&family=Nunito:wght@500;700;800&display=swap">
 <style>
-/* Layout: a night-forest theatre; the book page is the stage, the story text is the narrator's scroll beside it. Single dark look on purpose. */
+/* Layout: a bookshelf at night; each cover is a floating book you tap to open. Single dark look, like the reader. */
 :root {
   --night: #0d1730;
   --night-2: #172a52;
   --gold: #f4c14f;
   --gold-soft: #ffe7a3;
   --parch: #fbf3dc;
-  --parch-2: #f3e3b6;
   --ink: #1c2550;
-  --leaf: #6cc46a;
-  --rose: #ff6f8f;
   --muted: #b9c3e6;
+  --red: #e0262f;
   --display: "Baloo Bhaijaan 2", "Nunito", system-ui, sans-serif;
-  --body: "Nunito", "Baloo Bhaijaan 2", system-ui, sans-serif;
   --arabic: "Baloo Bhaijaan 2", "Noto Naskh Arabic", "Segoe UI", Tahoma, sans-serif;
   color-scheme: dark;
 }
-html, body { height: 100%; }
+html, body { min-height: 100%; }
 body {
-  background: radial-gradient(120% 90% at 50% 0%, var(--night-2) 0%, var(--night) 60%) fixed, var(--night);
+  background: radial-gradient(120% 80% at 50% 0%, var(--night-2) 0%, var(--night) 65%) fixed, var(--night);
   background-color: var(--night);
   color: var(--parch);
-  font-family: var(--body);
-  overflow: hidden;
+  font-family: var(--display);
+  overflow-x: hidden;
 }
-button { font: inherit; color: inherit; cursor: pointer; }
-button:focus-visible, a:focus-visible { outline: 3px solid var(--gold-soft); outline-offset: 3px; border-radius: 12px; }
+#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+main {
+  position: relative; z-index: 1;
+  max-width: 1100px; margin: 0 auto;
+  padding: max(28px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(40px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+  display: flex; flex-direction: column; gap: clamp(24px, 4vw, 44px);
+}
+header { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.eyebrow { font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); font-size: .85rem; }
+h1 { margin: 0; font-family: var(--arabic); font-weight: 800; font-size: clamp(2.2rem, 7vw, 4.2rem); line-height: 1.1; color: var(--gold-soft); text-shadow: 0 4px 0 #8a5a12, 0 10px 30px rgba(0,0,0,.5); }
+.sub { margin: 0; font-weight: 700; font-size: clamp(1.05rem, 2.4vw, 1.4rem); color: var(--parch); }
+.hint { margin: 4px 0 0; color: var(--muted); font-size: 1rem; max-width: 52ch; line-height: 1.5; }
 
-#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
-.flash { position: fixed; inset: 0; background: #dfe8ff; opacity: 0; pointer-events: none; z-index: 4; }
-.flash.on { animation: flash 3.6s ease-in-out infinite; }
-@keyframes flash { 0%, 62%, 66%, 70%, 100% { opacity: 0 } 64% { opacity: .35 } 68% { opacity: .18 } }
-
-/* ---------- Intro ---------- */
-.intro {
-  position: fixed; inset: 0; z-index: 10;
-  display: grid; place-items: center;
-  padding-block: max(20px, env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-bottom, 0px));
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
-  background: radial-gradient(90% 70% at 50% 40%, rgba(244,193,79,.16), transparent 70%), var(--night);
-  overflow-y: auto;
-  transition: opacity .9s ease, visibility .9s;
+.shelf { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 300px)); justify-content: center; gap: clamp(26px, 4vw, 48px); align-items: start; }
+.book {
+  display: flex; flex-direction: column; gap: 14px; text-decoration: none; color: inherit;
+  perspective: 1200px; border-radius: 16px; outline: none;
+  animation: rise .8s cubic-bezier(.2,.7,.2,1) both;
 }
-.intro.gone { opacity: 0; visibility: hidden; }
-.intro-inner { display: flex; align-items: center; gap: clamp(24px, 5vw, 72px); max-width: 1100px; width: 100%; }
-.cover-wrap { flex: 0 0 auto; width: min(42vw, 400px, calc((100dvh - 80px) * .75)); perspective: 1400px; }
-.cover {
-  display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover;
-  border-radius: 14px;
-  box-shadow: 0 0 0 3px var(--gold), 0 0 60px rgba(244,193,79,.45), 0 30px 60px rgba(0,0,0,.55);
-  animation: floaty 6s ease-in-out infinite;
-  transform-origin: 50% 60%;
+.book:nth-child(2) { animation-delay: .12s } .book:nth-child(3) { animation-delay: .24s } .book:nth-child(4) { animation-delay: .36s }
+@keyframes rise { from { opacity: 0; transform: translateY(24px) } to { opacity: 1; transform: none } }
+.cover-box { position: relative; transform-style: preserve-3d; animation: floaty 6s ease-in-out infinite; }
+.book:nth-child(even) .cover-box { animation-delay: -3s; }
+@keyframes floaty { 0%,100% { transform: translateY(0) rotateY(-7deg) rotateZ(-1deg) } 50% { transform: translateY(-10px) rotateY(6deg) rotateZ(1deg) } }
+.cover-box img {
+  display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 12px;
+  box-shadow: 0 0 0 3px var(--gold), 0 0 44px rgba(244,193,79,.32), 0 26px 50px rgba(0,0,0,.55);
+  transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s;
 }
-@keyframes floaty { 0%,100% { transform: translateY(0) rotateY(-8deg) rotateZ(-1deg) } 50% { transform: translateY(-14px) rotateY(6deg) rotateZ(1deg) } }
-.intro-text { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
-.eyebrow { font-family: var(--display); font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); font-size: .85rem; }
-.intro h1 { margin: 0; font-family: var(--arabic); font-weight: 800; font-size: clamp(2.4rem, 6vw, 4.6rem); line-height: 1.05; color: var(--gold-soft); text-shadow: 0 4px 0 #8a5a12, 0 10px 30px rgba(0,0,0,.5); text-wrap: balance; }
-.intro h2 { margin: 0; font-family: var(--display); font-weight: 700; font-size: clamp(1.15rem, 2.4vw, 1.6rem); color: var(--parch); text-wrap: balance; }
-.intro .sub-ar { font-family: var(--arabic); font-size: clamp(1.1rem, 2.2vw, 1.45rem); color: var(--muted); }
-.intro p.lead { margin: 0; color: var(--muted); max-width: 46ch; line-height: 1.6; }
-.cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 6px; }
-.btn-main {
-  border: 0; border-radius: 999px; padding: 14px 28px;
-  background: linear-gradient(180deg, var(--gold-soft), var(--gold));
-  color: var(--ink); font-family: var(--display); font-weight: 800; font-size: 1.15rem;
-  box-shadow: 0 6px 0 #9a6a14, 0 14px 30px rgba(244,193,79,.35);
-  transition: transform .15s ease, box-shadow .15s ease;
+.cover-box::before { /* book spine */
+  content: ""; position: absolute; top: 2%; bottom: 2%; left: -9px; width: 12px; border-radius: 6px 0 0 6px;
+  background: linear-gradient(90deg, #6b4510, #b9862a); box-shadow: -2px 6px 14px rgba(0,0,0,.4);
 }
-.btn-main:hover { transform: translateY(-2px); }
-.btn-main:active { transform: translateY(4px); box-shadow: 0 2px 0 #9a6a14; }
-.btn-ghost { border: 2px solid rgba(244,193,79,.55); background: transparent; border-radius: 999px; padding: 12px 22px; font-family: var(--display); font-weight: 700; color: var(--gold-soft); }
-.auto-pick { display: flex; flex-direction: column; gap: 10px; }
-.auto-label { font-family: var(--display); font-weight: 800; color: var(--gold); font-size: 1rem; }
-.intro .note { font-size: .85rem; color: var(--muted); opacity: .8; }
-
-/* ---------- Reader ---------- */
-.app {
-  height: 100%;
-  display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-block: 8px 10px;
-  gap: 8px;
+.book:hover .cover-box img, .book:focus-visible .cover-box img { transform: translateY(-8px) scale(1.03); box-shadow: 0 0 0 3px var(--gold-soft), 0 0 70px rgba(244,193,79,.55), 0 34px 60px rgba(0,0,0,.6); }
+.book:focus-visible .cover-box img { outline: 3px solid var(--gold-soft); outline-offset: 6px; }
+.ribbon {
+  position: absolute; top: 14px; right: -10px; z-index: 2;
+  background: var(--red); color: #fff; font-weight: 800; font-size: .9rem; padding: 5px 14px;
+  border-radius: 6px 6px 0 6px; box-shadow: 0 6px 14px rgba(0,0,0,.35);
+  animation: pulse 2.4s ease-in-out infinite;
 }
-.topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-width: 0; }
-.brand { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
-.brand b { font-family: var(--arabic); font-size: 1.35rem; color: var(--gold-soft); white-space: nowrap; }
-.brand span { font-family: var(--display); color: var(--muted); font-size: .95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tools { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
-.tool {
-  border: 1px solid rgba(244,193,79,.35); background: rgba(255,255,255,.05);
-  border-radius: 999px; padding: 7px 12px; font-family: var(--display); font-weight: 700; font-size: .9rem;
-  display: inline-flex; align-items: center; gap: 6px; color: var(--parch);
+.ribbon::after { content: ""; position: absolute; right: 0; bottom: -8px; border: 4px solid #8f1018; border-bottom-color: transparent; border-right-color: transparent; }
+@keyframes pulse { 0%,100% { transform: scale(1) } 50% { transform: scale(1.08) } }
+.meta { display: flex; flex-direction: column; gap: 6px; text-align: center; align-items: center; }
+.meta .t-ar { font-family: var(--arabic); font-weight: 800; font-size: 1.3rem; line-height: 1.3; color: var(--gold-soft); }
+.meta .t-lat { font-weight: 700; color: var(--parch); font-size: .98rem; line-height: 1.35; }
+.badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; margin-top: 2px; }
+.badge { border: 1px solid rgba(244,193,79,.45); border-radius: 999px; padding: 3px 10px; font-weight: 800; font-size: .8rem; color: var(--gold-soft); }
+.badge.pages { color: var(--muted); border-color: rgba(185,195,230,.35); }
+.read-cta {
+  margin-top: 4px; border-radius: 999px; padding: 9px 22px;
+  background: linear-gradient(180deg, var(--gold-soft), var(--gold)); color: var(--ink); font-weight: 800; font-size: 1rem;
+  box-shadow: 0 5px 0 #9a6a14, 0 12px 24px rgba(244,193,79,.3);
 }
-.tool[aria-pressed="true"] { background: var(--gold); color: var(--ink); border-color: var(--gold); }
-.tool svg { width: 18px; height: 18px; }
-.seg { display: inline-flex; border: 1px solid rgba(244,193,79,.35); border-radius: 999px; overflow: hidden; }
-.seg button { border: 0; background: transparent; padding: 7px 11px; font-family: var(--display); font-weight: 700; font-size: .9rem; color: var(--parch); }
-.seg button[aria-pressed="true"] { background: var(--gold); color: var(--ink); }
-
-.reader {
-  display: grid; grid-template-columns: auto minmax(0, 1fr);
-  gap: clamp(16px, 3vw, 48px); align-items: center; justify-content: center;
-  min-height: 0; max-width: 1280px; width: 100%; margin: 0 auto;
-}
-.stage { position: relative; height: 100%; min-height: 0; display: flex; align-items: center; justify-content: center; perspective: 2200px; }
-.book { position: relative; height: 100%; max-height: 100%; aspect-ratio: 3 / 4; max-width: 100%; }
-.page {
-  position: absolute; inset: 0; margin: 0; overflow: hidden; border-radius: 12px;
-  box-shadow: 0 0 0 3px rgba(244,193,79,.85), 0 0 50px rgba(244,193,79,.25), 0 26px 50px rgba(0,0,0,.55);
-  transform-origin: 0% 50%; backface-visibility: hidden; background: var(--night-2);
-  cursor: zoom-in;
-}
-.page img { width: 100%; height: 100%; object-fit: cover; display: block; transform-origin: var(--ox, 50%) var(--oy, 40%); animation: kenburns 22s ease-in-out infinite alternate; }
-@keyframes kenburns { from { transform: scale(1) } to { transform: scale(1.09) } }
-.page::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(100deg, rgba(255,255,255,.18) 0%, transparent 18%, transparent 82%, rgba(0,0,0,.22) 100%); }
-.page.enter-next { animation: enterNext .9s cubic-bezier(.2,.7,.2,1) both; }
-.page.enter-prev { animation: enterPrev .9s cubic-bezier(.2,.7,.2,1) both; }
-.page.leave-next { animation: leaveNext .9s cubic-bezier(.5,0,.7,.4) both; z-index: 2; }
-.page.leave-prev { animation: leavePrev .9s cubic-bezier(.5,0,.7,.4) both; z-index: 2; transform-origin: 100% 50%; }
-@keyframes enterNext { from { opacity: 0; transform: scale(.94) translateX(4%); filter: blur(6px) brightness(.6) } to { opacity: 1; transform: none; filter: none } }
-@keyframes enterPrev { from { opacity: 0; transform: scale(.94) translateX(-4%); filter: blur(6px) brightness(.6) } to { opacity: 1; transform: none; filter: none } }
-@keyframes leaveNext { 0% { transform: rotateY(0) } 100% { transform: rotateY(-105deg); opacity: .2; filter: brightness(.4) } }
-@keyframes leavePrev { 0% { transform: rotateY(0) } 100% { transform: rotateY(105deg); opacity: .2; filter: brightness(.4) } }
-
-.navbtn {
-  position: absolute; top: 50%; translate: 0 -50%; z-index: 6;
-  width: 52px; height: 52px; border-radius: 50%; border: 0;
-  background: rgba(13,23,48,.65); backdrop-filter: blur(6px);
-  box-shadow: 0 0 0 2px var(--gold); display: grid; place-items: center; color: var(--gold-soft);
-}
-.navbtn svg { width: 26px; height: 26px; }
-.navbtn.prev { left: -26px; }
-.navbtn.next { right: -26px; }
-.navbtn:disabled { opacity: .25; cursor: default; }
-
-.story {
-  min-width: 0; max-width: 560px; max-height: 100%; overflow-y: auto;
-  background: linear-gradient(180deg, var(--parch), var(--parch-2));
-  color: var(--ink); border-radius: 22px; padding: clamp(18px, 2.4vw, 30px);
-  box-shadow: 0 0 0 3px var(--gold), 0 20px 50px rgba(0,0,0,.45);
-  display: flex; flex-direction: column; gap: 14px;
-}
-.story .num { display: flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 800; color: #8a5a12; letter-spacing: .08em; text-transform: uppercase; font-size: .8rem; }
-.story .num i { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--gold); color: var(--ink); font-style: normal; font-size: 1rem; letter-spacing: 0; box-shadow: 0 0 0 3px #fff6d6; }
-.story h3 { margin: 0; font-family: var(--display); font-weight: 800; font-size: clamp(1.35rem, 2.2vw, 1.8rem); line-height: 1.15; text-wrap: balance; color: var(--ink); }
-.story h3.ar { font-family: var(--arabic); color: #b3261e; }
-.block { display: flex; flex-direction: column; gap: 6px; }
-.block .lang { font-family: var(--display); font-weight: 800; font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; color: #8a5a12; }
-.block p { margin: 0; font-size: clamp(1.02rem, 1.35vw, 1.15rem); line-height: 1.6; font-weight: 600; }
-.block.ar p { font-family: var(--arabic); font-size: clamp(1.15rem, 1.55vw, 1.32rem); line-height: 1.75; font-weight: 600; }
-.block.ar .lang { text-align: right; }
-.divider { height: 2px; background: linear-gradient(90deg, transparent, rgba(138,90,18,.45), transparent); }
-.reveal > * { animation: rise .7s cubic-bezier(.2,.7,.2,1) both; }
-.reveal > *:nth-child(2) { animation-delay: .08s }
-.reveal > *:nth-child(3) { animation-delay: .16s }
-.reveal > *:nth-child(4) { animation-delay: .26s }
-.reveal > *:nth-child(5) { animation-delay: .36s }
-.reveal > *:nth-child(6) { animation-delay: .46s }
-@keyframes rise { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: none } }
-.word.speaking { background: rgba(244,193,79,.55); border-radius: 4px; }
-
-.bottombar { display: flex; align-items: center; gap: 12px; max-width: 1280px; width: 100%; margin: 0 auto; }
-.progress { flex: 1; display: flex; gap: 3px; min-width: 0; }
-.progress button { flex: 1; height: 10px; border: 0; padding: 0; border-radius: 99px; background: rgba(255,255,255,.14); transition: background .3s; }
-.progress button.done { background: rgba(244,193,79,.55); }
-.progress button.cur { background: var(--gold); box-shadow: 0 0 10px var(--gold); }
-.counter { font-family: var(--display); font-weight: 800; color: var(--gold-soft); font-variant-numeric: tabular-nums; white-space: nowrap; }
-
-/* lightbox */
-.lightbox { position: fixed; inset: 0; z-index: 20; background: rgba(5,10,24,.92); display: grid; place-items: center; padding: max(12px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); overflow: auto; cursor: zoom-out; }
-.lightbox img { max-height: calc(100dvh - 24px); width: auto; max-width: 100%; border-radius: 10px; box-shadow: 0 0 0 3px var(--gold); }
-
-/* end card */
-.end { position: fixed; inset: 0; z-index: 12; display: grid; place-items: center; background: radial-gradient(80% 60% at 50% 45%, rgba(255,111,143,.22), transparent 70%), rgba(13,23,48,.94); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); text-align: center; }
-.end-inner { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-.end h2 { margin: 0; font-family: var(--arabic); font-size: clamp(3rem, 9vw, 6rem); color: var(--gold-soft); text-shadow: 0 4px 0 #8a5a12; line-height: 1; }
-.end h3 { margin: 0; font-family: var(--display); font-size: clamp(1.6rem, 4vw, 2.6rem); color: var(--parch); }
-.end p { margin: 0; color: var(--muted); max-width: 40ch; line-height: 1.6; }
-.end .ar { font-family: var(--arabic); font-size: 1.2rem; }
-
-@media (max-width: 860px) {
-  .reader { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; align-items: stretch; }
-  .story { max-width: none; max-height: 36dvh; border-radius: 18px; padding: 16px; gap: 10px; }
-  .navbtn { width: 44px; height: 44px; }
-  .navbtn.prev { left: 2px; } .navbtn.next { right: 2px; }
-  .brand span { display: none; }
-  .intro-inner { flex-direction: column; text-align: center; gap: 22px; }
-  .intro-text { align-items: center; }
-  .cover-wrap { width: min(70vw, 300px, calc((100dvh - 330px) * .75)); min-width: 160px; }
-  .cta-row { justify-content: center; }
-  .auto-pick { align-items: center; }
-}
-@media (max-width: 480px) {
-  .tool .lbl { display: none; }
-  .tool { padding: 7px 9px; }
-  .seg button { padding: 7px 9px; }
-}
+.book.opening .cover-box { animation: none; }
+.book.opening .cover-box img { transform: scale(1.12) rotateY(-24deg); transition: transform .5s cubic-bezier(.5,0,.7,.4), opacity .5s; opacity: .2; }
 @media (prefers-reduced-motion: reduce) {
-  .page img, .cover { animation: none; }
-  .page.enter-next, .page.enter-prev, .page.leave-next, .page.leave-prev { animation-duration: .01s; }
-  .reveal > * { animation: none; }
-  .flash.on { animation: none; }
+  .cover-box, .ribbon, .book { animation: none; }
 }
 </style>
 </head>
 <body>
-
-
 <canvas id="fx" aria-hidden="true"></canvas>
-<div class="flash" id="flash"></div>
-
-<section class="intro" id="intro">
-  <div class="intro-inner">
-    <div class="cover-wrap"><img class="cover" src="img/p00.jpg" alt="Couverture : Ali Diab avec le lion, l'éléphant, le lapin, le renard, le faon et l'oiseau bleu dans la forêt magique"></div>
-    <div class="intro-text">
-      <div class="eyebrow">Un livre animé · كتاب متحرّك</div>
-      <h1 lang="ar" dir="rtl">مغامرات البطل علي دياب</h1>
-      <div class="sub-ar" lang="ar" dir="rtl">وسرّ قوس قزح والغابة السحرية</div>
-      <h2>Les aventures du héros Ali Diab et le secret de la forêt magique</h2>
-      <p class="lead">24 pages en français et en arabe. Tournez les pages, écoutez l'histoire et laissez la forêt s'animer.</p>
-      <div class="cta-row">
-        <button class="btn-main" id="startBtn" type="button">Ouvrir le livre · افتح الكتاب</button>
-      </div>
-      <div class="auto-pick">
-        <div class="auto-label">▶ <span lang="ar" dir="rtl">قراءة تلقائية بالصوت</span> · Lecture automatique</div>
-        <div class="cta-row">
-          <button class="btn-ghost" type="button" data-auto="ar" lang="ar" dir="rtl">بالعربية</button>
-          <button class="btn-ghost" type="button" data-auto="fr" lang="fr">En français</button>
-          <button class="btn-ghost" type="button" data-auto="both">عربي + Français</button>
-        </div>
-      </div>
-      <div class="note">Touchez une image pour la voir en grand. Glissez ou utilisez les flèches pour tourner les pages.</div>
-    </div>
-  </div>
-</section>
-
-<div class="app" id="app">
-  <header class="topbar">
-    <div class="brand"><b lang="ar" dir="rtl">علي دياب</b><span>Ali Diab et la forêt magique</span></div>
-    <div class="tools">
-      <button class="tool" type="button" id="homeBtn" title="Accueil · الرئيسية" aria-label="Accueil">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg><span class="lbl">الرئيسية</span>
-      </button>
-      <div class="seg" role="group" aria-label="Langue du texte">
-        <button type="button" id="lang-fr" data-lang="fr" aria-pressed="false">FR</button>
-        <button type="button" id="lang-both" data-lang="both" aria-pressed="true">FR+ع</button>
-        <button type="button" id="lang-ar" data-lang="ar" aria-pressed="false">ع</button>
-      </div>
-      <button class="tool" type="button" id="listenBtn" aria-pressed="false" title="Écouter l'histoire">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg><span class="lbl">Écouter</span>
-      </button>
-      <button class="tool" type="button" id="autoBtn" aria-pressed="false" title="Lecture automatique">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg><span class="lbl">Auto</span>
-      </button>
-      <button class="tool" type="button" id="musicBtn" aria-pressed="false" title="Musique">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span class="lbl">Musique</span>
-      </button>
-    </div>
+<main>
+  <header>
+    <div class="eyebrow">Les histoires d'Ali Diab · Ali Diab's stories</div>
+    <h1 lang="ar" dir="rtl">مكتبة قصص علي دياب</h1>
+    <p class="sub">Choisis ton histoire · Choose your story</p>
+    <p class="hint" lang="ar" dir="rtl">اختر غلاف القصة التي تريد أن تقرأها</p>
   </header>
+  <section class="shelf" id="shelf" aria-label="Stories"></section>
+</main>
 
-  <main class="reader">
-    <div class="stage">
-      <div class="book" id="book"></div>
-      <button class="navbtn prev" id="prevBtn" type="button" aria-label="Page précédente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-      <button class="navbtn next" id="nextBtn" type="button" aria-label="Page suivante"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
-    </div>
-    <article class="story" id="story" aria-live="polite"></article>
-  </main>
-
-  <footer class="bottombar">
-    <div class="progress" id="progress"></div>
-    <div class="counter" id="counter">0 / 24</div>
-  </footer>
-</div>
-
-<div class="lightbox" id="lightbox" hidden><img id="lightImg" alt=""></div>
-
-<section class="end" id="end" hidden>
-  <div class="end-inner">
-    <h2 lang="ar" dir="rtl">النهاية</h2>
-    <h3>Fin</h3>
-    <p>Merci d'avoir lu l'histoire d'Ali Diab, le héros au grand cœur.</p>
-    <p class="ar" lang="ar" dir="rtl">شكرًا لقراءتكم قصة علي دياب، البطل صاحب القلب الكبير.</p>
-    <div class="cta-row">
-      <button class="btn-main" id="againBtn" type="button">Relire · اقرأ من جديد</button>
-      <button class="btn-ghost" id="backBtn" type="button">Revenir à la dernière page</button>
-      <button class="btn-ghost" id="endHome" type="button">الرئيسية · Accueil</button>
-    </div>
-  </div>
-</section>
-
+<script src="stories/library.js"></script>
 <script>
-const PAGES = [
-  { fx: "fireflies", tFr: "Les aventures du héros Ali Diab", tAr: "مغامرات البطل علي دياب",
-    fr: "Le secret de l'arc-en-ciel et de la forêt magique. Une histoire d'amitié, de courage et d'amour pour la nature.",
-    ar: "وسرّ قوس قزح والغابة السحرية. قصة عن الصداقة والشجاعة وحبّ الطبيعة." },
-  { fx: "sparkle", tFr: "Le début de l'aventure", tAr: "بداية المغامرة",
-    fr: "Un beau matin, Ali Diab se réveille plein d'énergie. Il sent que quelque chose de spécial l'attend aujourd'hui… Une nouvelle aventure !",
-    ar: "في صباحٍ جميل، استيقظ علي دياب مليئًا بالطاقة. شعر أن شيئًا مميزًا ينتظره اليوم… مغامرة جديدة!" },
-  { fx: "crystal", tFr: "Une découverte étonnante", tAr: "اكتشاف مذهل",
-    fr: "Lors d'une promenade dans la forêt, Ali Diab découvre une pierre magique qui brille d'une lumière mystérieuse.",
-    ar: "خلال نزهة في الغابة، اكتشف علي دياب حجرًا سحريًا يضيء بضوءٍ غامض." },
-  { fx: "fireflies", tFr: "De nouveaux amis", tAr: "أصدقاء جدد",
-    fr: "La pierre magique réveille les animaux de la forêt ! Ali Diab fait la connaissance d'un lion courageux, d'un éléphant gentil, d'un lapin malin et d'un petit daim curieux. Ils décident de l'accompagner dans son aventure.",
-    ar: "يوقظ الحجر السحري حيوانات الغابة! يتعرّف علي دياب على أسدٍ شجاع، وفيلٍ طيّب، وأرنبٍ ذكي، وغزالٍ صغير فضولي. ويقرّرون جميعًا مرافقته في مغامرته." },
-  { fx: "sparkle", tFr: "Le message de la nature", tAr: "رسالة من الطبيعة",
-    fr: "Ils découvrent un ancien message de la nature sur une pierre : « La forêt est un trésor. Aidez-la, protégez les animaux et gardez la rivière propre. » Ali Diab comprend que leur aventure a un but spécial : prendre soin de la nature !",
-    ar: "يكتشفون رسالة قديمة من الطبيعة منقوشة على حجر: «الغابة كنز، ساعدوها، احموا الحيوانات وحافظوا على نظافة النهر». يدرك علي دياب أن مغامرتهم لها هدف مميز: العناية بالطبيعة!" },
-  { fx: "splash", tFr: "Une traversée difficile", tAr: "عبور صعب",
-    fr: "Le chemin n'est pas facile ! Ils doivent traverser une rivière agitée. Grâce à son courage, Ali Diab trouve une solution et aide tout le monde à passer en sécurité.",
-    ar: "لم يكن الطريق سهلًا على أصدقائنا! علي دياب يفكّر بحلٍّ ذكي، ويساعد الجميع على عبور النهر المتلاطم بأمان." },
-  { fx: "splash", tFr: "Le pont de l'amitié", tAr: "جسر الصداقة",
-    fr: "Ensemble, Ali Diab et ses amis construisent un pont solide avec des troncs et des cordes. Grâce à la coopération et à l'amitié, ils réussissent à traverser le fleuve.",
-    ar: "معًا، يبني علي دياب وأصدقاؤه جسرًا قويًا من جذوع الأشجار والحبال. وبفضل التعاون والصداقة، ينجحون في عبور النهر." },
-  { fx: "crystal", tFr: "L'énigme de la porte magique", tAr: "لغز الباب السحري",
-    fr: "Ils arrivent devant une porte magique qui ne s'ouvre qu'en résolvant une énigme. Ali Diab réfléchit et comprend : il faut l'équilibre entre le soleil, l'eau, les plantes et les montagnes pour que la nature reste en vie !",
-    ar: "يصل علي دياب وأصدقاؤه إلى باب سحري لا يُفتح إلا بحلّ لغز. يفكّر علي دياب جيدًا ويفهم: علينا الحفاظ على التوازن بين الشمس، والماء، والنباتات، والجبال، كي تبقى الطبيعة حيّة!" },
-  { fx: "leaves", tFr: "La montée vers le sommet", tAr: "الصعود إلى القمّة",
-    fr: "Ali Diab et ses amis commencent une longue montée vers le sommet de la montagne. Le chemin est difficile, mais avec de la persévérance, du courage et l'entraide, ils avancent pas à pas.",
-    ar: "يبدأ علي دياب وأصدقاؤه رحلة طويلة للصعود إلى قمّة الجبل. الطريق صعب، لكن بفضل المثابرة، والشجاعة، ومساعدة بعضهم البعض، يتقدّمون خطوةً بخطوة." },
-  { fx: "rain", tFr: "La tempête inattendue", tAr: "العاصفة المفاجئة",
-    fr: "Soudain, une grande tempête se lève ! Le vent souffle fort et la pluie tombe. Ali Diab garde son calme, trouve une grotte sûre et protège ses amis jusqu'à ce que la tempête passe.",
-    ar: "وفجأة، تهبّ عاصفة قوية! تهبّ الرياح بقوة ويبدأ المطر بالهطول. يحافظ علي دياب على هدوئه، ويجد كهفًا آمنًا، ويحمي أصدقاءه حتى تنتهي العاصفة." },
-  { fx: "splash", tFr: "Le travail d'équipe", tAr: "العمل الجماعي",
-    fr: "Ali Diab et ses amis comprennent que, ensemble, ils sont plus forts. Grâce à leur coopération, ils construisent un pont solide pour continuer leur aventure.",
-    ar: "يدرك علي دياب وأصدقاؤه أن التعاون يجعلهم أقوى. وبفضل عملهم الجماعي، يبنون جسرًا متينًا ليكملوا مغامرتهم." },
-  { fx: "crystal", tFr: "La grotte de lumière", tAr: "مغارة النور",
-    fr: "Ali Diab et ses amis découvrent une grotte magique remplie de lumière. Ils comprennent que cette lumière représente l'espoir, la connaissance et l'amitié.",
-    ar: "يكتشف علي دياب وأصدقاؤه مغارة سحرية مليئة بالنور. ويفهمون أن هذا النور يرمز إلى الأمل والمعرفة والصداقة." },
-  { fx: "crystal", tFr: "Les pièces manquantes", tAr: "القطع المفقودة",
-    fr: "Dans la grotte, Ali Diab et ses amis trouvent quatre pièces magiques manquantes. En les réunissant, ils complètent le symbole de l'équilibre de la nature.",
-    ar: "في المغارة، يجد علي دياب وأصدقاؤه أربع قطع سحرية مفقودة. وبعد أن يجمعوها معًا، يكملون رمز توازن الطبيعة." },
-  { fx: "sparkle", tFr: "La découverte du secret", tAr: "اكتشاف السر",
-    fr: "Ali Diab et ses amis découvrent le secret : la vraie richesse, c'est une nature en équilibre, des amis fidèles et un cœur courageux qui n'abandonne jamais.",
-    ar: "يكتشف علي دياب وأصدقاؤه السر: الكنز الحقيقي هو في طبيعة متوازنة، وأصدقاء أوفياء، وقلب شجاع لا يستسلم أبدًا." },
-  { fx: "sparkle", tFr: "Le retour de la lumière", tAr: "عودة النور",
-    fr: "Grâce à l'union, au courage et au respect de la nature, la lumière revient dans la vallée. La forêt retrouve sa vie, les animaux sont heureux et l'équilibre est rétabli.",
-    ar: "بفضل التعاون والشجاعة واحترام الطبيعة، يعود النور إلى الوادي. تستعيد الغابة حياتها، وتفرح الحيوانات، ويعود التوازن إلى الطبيعة." },
-  { fx: "confetti", tFr: "La fête de la forêt", tAr: "احتفال الغابة",
-    fr: "Ali Diab et ses amis organisent une grande fête pour célébrer leur aventure. Ils partagent un délicieux goûter, rient, jouent et se promettent de vivre encore plein d'autres aventures ensemble.",
-    ar: "ينظّم علي دياب وأصدقاؤه احتفالًا كبيرًا في الغابة للاحتفال بمغامرتهم. يتشاركون وجبة لذيذة، يضحكون، يلعبون، ويعدون بعضهم بخوض مغامرات أخرى كثيرة معًا." },
-  { fx: "sparkle", tFr: "Le cadeau de la forêt", tAr: "هدية الغابة",
-    fr: "Pour le remercier de son courage, de sa gentillesse et de son esprit d'équipe, les amis d'Ali Diab lui offrent un médaillon magique : le Symbole de la Protection de la Nature.",
-    ar: "شكرًا لعلي دياب على شجاعته وطيبته وروح التعاون لديه، يقدّم له أصدقاؤه هدية مميّزة: قلادة سحرية هي رمز حماية الطبيعة." },
-  { fx: "leaves", tFr: "Le chemin du retour", tAr: "طريق العودة",
-    fr: "Il est temps pour Ali Diab de rentrer à la maison. Il quitte la forêt avec le cœur rempli de joie, de belles leçons et de précieux souvenirs avec ses amis.",
-    ar: "حان وقت عودة علي دياب إلى البيت. يودّع الغابة وأصدقاءه، وهو يحمل في قلبه فرحًا كبيرًا، ودروسًا جميلة، وذكريات لا تُنسى." },
-  { fx: "stars", tFr: "Une surprise à la maison", tAr: "مفاجأة في البيت",
-    fr: "De retour à la maison, Ali Diab raconte son incroyable aventure à sa famille. Tous l'écoutent avec fierté et joie, admirant son courage, sa gentillesse et tout ce qu'il a appris sur la nature et l'amitié.",
-    ar: "عند عودته إلى البيت، يروي علي دياب لعائلته مغامرته الرائعة. يستمع الجميع إليه بفخرٍ وفرح، ويُعجبون بشجاعته وطيبته وبكل ما تعلّمه عن الطبيعة والصداقة." },
-  { fx: "stars", tFr: "Le rêve d'Ali Diab", tAr: "حلم علي دياب",
-    fr: "Cette nuit, Ali Diab s'endort avec un grand sourire. Il rêve de ses amis, de la belle forêt et de nouvelles aventures qu'ils vivront ensemble pour toujours.",
-    ar: "في تلك الليلة، ينام علي دياب بابتسامة كبيرة. يحلم بأصدقائه، وبالغابة الجميلة، وبمغامرات جديدة سيعيشونها معًا دائمًا." },
-  { fx: "sparkle", tFr: "La promesse d'Ali Diab", tAr: "وعد علي دياب",
-    fr: "Ali Diab fait une promesse : rester toujours courageux, gentil et serviable, protéger la nature, respecter les animaux et aider les autres, partout et à tout moment.",
-    ar: "يَعِد علي دياب نفسه أن يظلّ دائمًا شجاعًا، طيبًا ومتعاونًا، وأن يحمي الطبيعة، ويحترم الحيوانات، ويساعد الآخرين في كل مكان وفي كل وقت." },
-  { fx: "sparkle", tFr: "Un nouveau matin", tAr: "صباح جديد",
-    fr: "Un nouveau matin se lève ! Ali Diab se réveille plein d'énergie, heureux de tout ce qu'il a vécu, et se prépare pour de nouvelles aventures, avec le cœur encore plus courageux et généreux.",
-    ar: "يطلّ صباح جديد! يستيقظ علي دياب مليئًا بالطاقة والسعادة، مسرورًا بكل ما عاشه من مغامرة، ويستعد لمغامرات جديدة، بقلب أكثر شجاعة وكرمًا." },
-  { fx: "leaves", tFr: "Le héros au grand cœur", tAr: "البطل صاحب القلب الكبير",
-    fr: "Depuis son aventure, Ali Diab est devenu un vrai héros pour son entourage. Il aide les autres, protège la nature, respecte les animaux et partage toujours avec un grand cœur. Il a compris que la vraie force, c'est la gentillesse, le courage et l'esprit d'entraide.",
-    ar: "منذ مغامرته، أصبح علي دياب بطلًا حقيقيًا لمن حوله. يساعد الآخرين، ويحمي الطبيعة، ويحترم الحيوانات، ويشارك دائمًا بكرم وطيبة. لقد أدرك أن القوة الحقيقية تكمن في اللطف والشجاعة وروح التعاون." },
-  { fx: "hearts", tFr: "Un message pour Ali Diab", tAr: "رسالة إلى علي دياب",
-    fr: "Mon cher Ali Diab, je suis très fier de toi. Tu as montré que tu es courageux, gentil et généreux. Continue toujours à rêver, à apprendre, à aider les autres et à protéger notre belle nature. Garde ton grand cœur, car c'est ta plus grande force. Je t'aime très fort. Papa ❤",
-    ar: "حبيبي علي، أنا فخور جدًا بك. لقد أثبتّ أنك شجاع، طيّب وسخي. استمر دائمًا في الحلم، والتعلّم، ومساعدة الآخرين، وحماية طبيعتنا الجميلة. حافظ على قلبك الكبير، فهو أعظم قوة لديك. أحبك كثيرًا. بابا ❤" },
-  { fx: "hearts", tFr: "Pour toujours, mon héros", tAr: "بطلي إلى الأبد",
-    fr: "Ali Diab, tu es ma plus grande fierté, ma plus belle histoire, et mon plus grand bonheur. Quoi qu'il arrive, je serai toujours à tes côtés, pour te guider, t'aimer et te soutenir. Avec tout mon amour, Papa ❤",
-    ar: "علي، أنت فخري الأكبر، وسعادتي الأجمل، وقصتي التي لا تنتهي. مهما حصل، سأبقى دائمًا بجانبك، لأرشدك، وأحبك، وأدعمك. بكل حب، بابا ❤" },
-];
-const LAST = PAGES.length - 1;
-const src = i => `img/p${String(i).padStart(2, "0")}.jpg`;
-const $ = id => document.getElementById(id);
+const NAMES = { ar: "العربية", fr: "Français", en: "English" };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const shelf = document.getElementById("shelf");
 const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-let idx = 0, lang = "both", auto = false, listen = false, autoTimer = null, started = false;
-try { const l = localStorage.getItem("ali-lang"); if (l) lang = l; } catch (e) {}
-
-/* ---------- progress ---------- */
-const prog = $("progress");
-PAGES.forEach((p, i) => {
-  const b = document.createElement("button");
-  b.type = "button";
-  b.setAttribute("aria-label", i === 0 ? "Couverture" : `Page ${i} : ${p.tFr}`);
-  b.title = i === 0 ? "Couverture" : `${i}. ${p.tFr}`;
-  b.addEventListener("click", () => go(i));
-  prog.appendChild(b);
+shelf.innerHTML = (window.LIBRARY || []).map(b => {
+  const lat = [b.title.fr, b.title.en].filter(Boolean);
+  return `<a class="book" href="read.html?s=${encodeURIComponent(b.id)}">
+    <div class="cover-box">
+      ${b.isNew ? '<span class="ribbon">جديد · New</span>' : ""}
+      <img src="stories/${esc(b.id)}/img/p00.jpg" alt="${esc(b.alt || "")}" loading="lazy">
+    </div>
+    <div class="meta">
+      <div class="t-ar" lang="ar" dir="rtl">${esc(b.title.ar)}</div>
+      ${lat.map(t => `<div class="t-lat">${esc(t)}</div>`).join("")}
+      <div class="badges">${b.langs.map(l => `<span class="badge" lang="${l}">${NAMES[l]}</span>`).join("")}<span class="badge pages">${b.pages} pages</span></div>
+      <span class="read-cta">اقرأ · Lire · Read</span>
+    </div>
+  </a>`;
+}).join("");
+// small "book opens" animation before leaving
+shelf.addEventListener("click", e => {
+  const a = e.target.closest("a.book");
+  if (!a || reduced || e.ctrlKey || e.metaKey || e.shiftKey || e.button) return;
+  e.preventDefault();
+  a.classList.add("opening");
+  setTimeout(() => { location.href = a.href; }, 420);
 });
+addEventListener("pageshow", () => document.querySelectorAll(".book.opening").forEach(b => b.classList.remove("opening")));
 
-/* ---------- rendering ---------- */
-function esc(s) { return s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
-function words(s) { return s.split(/(\s+)/).map(w => /\s+/.test(w) ? w : `<span class="word">${esc(w)}</span>`).join(""); }
-
-function renderStory(i) {
-  const p = PAGES[i];
-  const showFr = lang !== "ar", showAr = lang !== "fr";
-  let h = `<div class="num"><i>${i}</i>${i === 0 ? "Couverture · الغلاف" : `Page ${i} sur ${LAST}`}</div>`;
-  if (showFr) h += `<h3 lang="fr">${esc(p.tFr)}</h3>`;
-  if (showAr) h += `<h3 class="ar" lang="ar" dir="rtl">${esc(p.tAr)}</h3>`;
-  if (showFr) h += `<div class="block fr" lang="fr"><div class="lang">Français</div><p id="txt-fr">${words(p.fr)}</p></div>`;
-  if (showFr && showAr) h += `<div class="divider"></div>`;
-  if (showAr) h += `<div class="block ar" lang="ar" dir="rtl"><div class="lang">العربية</div><p id="txt-ar">${words(p.ar)}</p></div>`;
-  const s = $("story");
-  s.classList.remove("reveal"); s.innerHTML = h; void s.offsetWidth; s.classList.add("reveal");
-  s.scrollTop = 0;
-}
-
-function renderPage(i, dir) {
-  const book = $("book");
-  const old = book.querySelector(".page:not(.leave-next):not(.leave-prev)");
-  const fig = document.createElement("figure");
-  fig.className = "page";
-  const img = new Image();
-  img.src = src(i);
-  img.alt = i === 0 ? "Couverture du livre" : `Illustration de la page ${i} : ${PAGES[i].tFr}`;
-  img.decoding = "async";
-  const ox = [30, 50, 70][i % 3], oy = [30, 45, 60][(i * 7) % 3];
-  img.style.setProperty("--ox", ox + "%"); img.style.setProperty("--oy", oy + "%");
-  fig.appendChild(img);
-  fig.addEventListener("click", () => openLight(i));
-  if (old) {
-    old.classList.add(dir < 0 ? "leave-prev" : "leave-next");
-    fig.classList.add(dir < 0 ? "enter-prev" : "enter-next");
-    setTimeout(() => old.remove(), 950);
-  } else fig.classList.add("enter-next");
-  book.appendChild(fig);
-  // preload neighbours
-  [i + 1, i + 2].forEach(n => { if (n <= LAST) { const pre = new Image(); pre.src = src(n); } });
-}
-
-function go(i, opts = {}) {
-  if (i < 0) return;
-  if (i > LAST) { showEnd(); return; }
-  const dir = i >= idx ? 1 : -1;
-  const same = i === idx && !opts.force;
-  idx = i;
-  if (!same || opts.force) { renderPage(i, dir); renderStory(i); }
-  $("prevBtn").disabled = idx === 0;
-  $("counter").textContent = `${idx} / ${LAST}`;
-  [...prog.children].forEach((b, n) => { b.classList.toggle("cur", n === idx); b.classList.toggle("done", n < idx); });
-  setFx(PAGES[idx].fx);
-  if (location.hash !== `#page-${idx}`) history.replaceState(null, "", `#page-${idx}`);
-  stopSpeech();
-  clearTimeout(autoTimer);
-  if (listen) setTimeout(() => speak(), 700);
-  else if (auto) scheduleAuto();
-}
-
-function scheduleAuto() {
-  clearTimeout(autoTimer);
-  const p = PAGES[idx];
-  const len = (lang === "ar" ? p.ar : p.fr).length;
-  autoTimer = setTimeout(() => go(idx + 1), Math.max(7000, len * 70));
-}
-
-/* ---------- controls ---------- */
-$("prevBtn").onclick = () => go(idx - 1);
-$("nextBtn").onclick = () => go(idx + 1);
-document.addEventListener("keydown", e => {
-  if (!started) { if (e.key === "Enter") start(false); return; }
-  if (!$("lightbox").hidden) { if (e.key === "Escape") closeLight(); return; }
-  if (e.key === "ArrowRight" || e.key === "PageDown" || e.key === " ") { e.preventDefault(); go(idx + 1); }
-  if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); go(idx - 1); }
-});
-let tx = null, ty = null;
-$("book").addEventListener("touchstart", e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
-$("book").addEventListener("touchend", e => {
-  if (tx === null) return;
-  const dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
-  if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) { e.preventDefault(); go(idx + (dx < 0 ? 1 : -1)); }
-  tx = null;
-});
-
-function setLang(l) {
-  lang = l;
-  try { localStorage.setItem("ali-lang", l); } catch (e) {}
-  document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === l)));
-  stopSpeech();
-  renderStory(idx);
-  if (listen) speak();
-}
-document.querySelectorAll(".seg button").forEach(b => b.onclick = () => setLang(b.dataset.lang));
-document.querySelectorAll(".seg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
-
-$("autoBtn").onclick = () => {
-  auto = !auto; $("autoBtn").setAttribute("aria-pressed", String(auto));
-  clearTimeout(autoTimer);
-  if (auto) { listen = true; $("listenBtn").setAttribute("aria-pressed", "true"); speak(); }
-};
-
-/* ---------- lightbox ---------- */
-function openLight(i) { $("lightImg").src = src(i); $("lightImg").alt = $("book").querySelector("img")?.alt || ""; $("lightbox").hidden = false; }
-function closeLight() { $("lightbox").hidden = true; }
-$("lightbox").onclick = closeLight;
-
-/* ---------- end ---------- */
-function showEnd() { stopSpeech(); clearTimeout(autoTimer); $("end").hidden = false; setFx("hearts"); }
-$("againBtn").onclick = () => { $("end").hidden = true; go(0, { force: true }); };
-$("backBtn").onclick = () => { $("end").hidden = true; setFx(PAGES[idx].fx); };
-
-/* ---------- narration (recorded MP3s, works on every phone) ---------- */
-const voiceEl = new Audio();
-voiceEl.preload = "auto";
-let speechToken = 0, hlRaf = 0;
-const aud = (code, i) => `audio/${code}${String(i).padStart(2, "0")}.mp3`;
-function clearHl() { cancelAnimationFrame(hlRaf); document.querySelectorAll(".word.speaking").forEach(w => w.classList.remove("speaking")); }
-function stopSpeech() { speechToken++; try { voiceEl.pause(); } catch (e) {} clearHl(); duck(false); }
-function duck(on) { if (master && ac) master.gain.setTargetAtTime(on ? 0.12 : 0.5, ac.currentTime, 0.3); }
-function unlockVoice() {
-  // iOS and some Android browsers only allow audio that was first started by a tap.
-  try { voiceEl.muted = true; voiceEl.src = aud("fr", 0); const pr = voiceEl.play(); if (pr) pr.then(() => { voiceEl.pause(); voiceEl.muted = false; }).catch(() => { voiceEl.muted = false; }); else voiceEl.muted = false; } catch (e) { voiceEl.muted = false; }
-}
-function speak() {
-  stopSpeech();
-  const token = speechToken;
-  const p = PAGES[idx];
-  const queue = [];
-  if (lang !== "ar") queue.push({ code: "fr", el: "txt-fr", title: p.tFr, text: p.fr });
-  if (lang !== "fr") queue.push({ code: "ar", el: "txt-ar", title: p.tAr, text: p.ar });
-  duck(true);
-  const run = n => {
-    if (token !== speechToken) return;
-    if (n >= queue.length) { duck(false); if (auto) autoTimer = setTimeout(() => go(idx + 1), 1400); return; }
-    const q = queue[n];
-    const spans = [...document.querySelectorAll(`#${q.el} .word`)];
-    // Highlight words in step with the audio, weighted by word length (title is read first).
-    const lens = spans.map(s => s.textContent.length + 1);
-    const titleLen = q.title.length + 4;
-    const total = titleLen + lens.reduce((a, b) => a + b, 0);
-    const ends = []; let acc = titleLen; lens.forEach(l => { acc += l; ends.push(acc / total); });
-    const tick = () => {
-      if (token !== speechToken) return;
-      const d = voiceEl.duration;
-      if (d && isFinite(d)) {
-        const f = voiceEl.currentTime / d;
-        const k = f < titleLen / total ? -1 : ends.findIndex(e => e >= f);
-        spans.forEach((s, j) => s.classList.toggle("speaking", j === k));
-      }
-      hlRaf = requestAnimationFrame(tick);
-    };
-    voiceEl.onended = () => { clearHl(); run(n + 1); };
-    voiceEl.onerror = () => { clearHl(); run(n + 1); };
-    voiceEl.src = aud(q.code, idx);
-    voiceEl.currentTime = 0;
-    const pr = voiceEl.play();
-    if (pr) pr.catch(() => { if (token === speechToken) { listen = false; $("listenBtn").setAttribute("aria-pressed", "false"); duck(false); } });
-    tick();
-  };
-  run(0);
-}
-$("listenBtn").onclick = () => {
-  listen = !listen; $("listenBtn").setAttribute("aria-pressed", String(listen));
-  clearTimeout(autoTimer);
-  if (listen) speak(); else { stopSpeech(); if (auto) scheduleAuto(); }
-};
-
-/* ---------- music box (Web Audio, generated) ---------- */
-let ac = null, musicOn = false, musicTimer = null, master = null;
-function note(freq, t, dur, vol) {
-  const o = ac.createOscillator(), o2 = ac.createOscillator(), g = ac.createGain();
-  o.type = "sine"; o2.type = "triangle";
-  o.frequency.value = freq; o2.frequency.value = freq * 2;
-  const g2 = ac.createGain(); g2.gain.value = 0.18;
-  o.connect(g); o2.connect(g2); g2.connect(g); g.connect(master);
-  g.gain.setValueAtTime(0.0001, t);
-  g.gain.exponentialRampToValueAtTime(vol, t + 0.015);
-  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-  o.start(t); o2.start(t); o.stop(t + dur + .05); o2.stop(t + dur + .05);
-}
-const MELODY = [
-  [72,1],[76,1],[79,1],[84,2],[79,1],[76,2],[77,1],[81,1],[84,1],[81,2],[77,1],[76,2],
-  [74,1],[77,1],[81,1],[79,2],[76,1],[72,2],[71,1],[74,1],[79,1],[77,1],[74,1],[72,3],
-];
-const BASS = [48, 53, 50, 43];
-function playLoop() {
-  if (!musicOn) return;
-  const beat = 0.34; let t = ac.currentTime + 0.1, total = 0;
-  MELODY.forEach(([m, d]) => { note(440 * Math.pow(2, (m - 69) / 12), t, beat * d * 2.2, 0.16); t += beat * d; total += d; });
-  BASS.forEach((m, k) => note(440 * Math.pow(2, (m - 69) / 12), ac.currentTime + 0.1 + k * total * beat / 4, total * beat / 4 * 1.4, 0.10));
-  musicTimer = setTimeout(playLoop, total * beat * 1000);
-}
-function toggleMusic(force) {
-  musicOn = typeof force === "boolean" ? force : !musicOn;
-  $("musicBtn").setAttribute("aria-pressed", String(musicOn));
-  if (musicOn) {
-    try {
-      if (!ac) {
-        ac = new (window.AudioContext || window.webkitAudioContext)();
-        master = ac.createGain(); master.gain.value = 0.5;
-        const delay = ac.createDelay(); delay.delayTime.value = 0.32;
-        const fb = ac.createGain(); fb.gain.value = 0.28;
-        master.connect(ac.destination); master.connect(delay); delay.connect(fb); fb.connect(delay); delay.connect(ac.destination);
-      }
-      ac.resume(); clearTimeout(musicTimer); playLoop();
-    } catch (e) { musicOn = false; $("musicBtn").setAttribute("aria-pressed", "false"); }
-  } else { clearTimeout(musicTimer); }
-}
-$("musicBtn").onclick = () => toggleMusic();
-
-/* ---------- ambient particles ---------- */
-const cv = $("fx"), cx = cv.getContext("2d");
-let W = 0, H = 0, DPR = 1, parts = [], mode = "fireflies";
-function resize() { DPR = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; cv.width = W * DPR; cv.height = H * DPR; cx.setTransform(DPR, 0, 0, DPR, 0, 0); }
+/* fireflies */
+const cv = document.getElementById("fx"), cx = cv.getContext("2d");
+let W, H, parts = [];
+function resize() { const d = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; cv.width = W * d; cv.height = H * d; cx.setTransform(d, 0, 0, d, 0, 0); }
 addEventListener("resize", resize); resize();
 const rnd = (a, b) => a + Math.random() * (b - a);
-const CONF = ["#f4c14f", "#ff6f8f", "#6cc46a", "#62b6ff", "#b48cff", "#ffffff"];
-function spawn(m, init) {
-  const p = { m, x: rnd(0, W), y: init ? rnd(0, H) : -20, life: 0 };
-  if (m === "rain") { p.vx = -2; p.vy = rnd(12, 18); p.len = rnd(10, 22); p.y = init ? rnd(0, H) : rnd(-60, 0); }
-  else if (m === "confetti") { p.vx = rnd(-0.6, 0.6); p.vy = rnd(1, 2.4); p.r = rnd(3, 6); p.rot = rnd(0, 6); p.vr = rnd(-.15, .15); p.c = CONF[(Math.random() * CONF.length) | 0]; }
-  else if (m === "hearts") { p.y = init ? rnd(0, H) : H + 20; p.vx = rnd(-.3, .3); p.vy = -rnd(.5, 1.2); p.r = rnd(6, 13); p.ph = rnd(0, 6); }
-  else if (m === "leaves") { p.vx = rnd(.3, 1.1); p.vy = rnd(.6, 1.3); p.r = rnd(5, 9); p.rot = rnd(0, 6); p.vr = rnd(-.04, .04); p.c = Math.random() < .5 ? "#6cc46a" : "#a6d65a"; }
-  else if (m === "stars") { p.y = rnd(0, H); p.r = rnd(.6, 2); p.ph = rnd(0, 6); p.vx = 0; p.vy = 0; }
-  else if (m === "splash") { p.y = init ? rnd(0, H) : H + 10; p.vx = rnd(-.3, .3); p.vy = -rnd(.3, .9); p.r = rnd(1.5, 4); }
-  else { // fireflies, sparkle, crystal
-    p.y = rnd(0, H); p.vx = rnd(-.35, .35); p.vy = rnd(-.45, .15); p.r = rnd(1.2, 3); p.ph = rnd(0, 6);
-    p.c = m === "crystal" ? (Math.random() < .6 ? "160,215,255" : "255,236,160") : "255,226,140";
-  }
-  return p;
-}
-const COUNTS = { rain: 140, confetti: 70, hearts: 26, leaves: 26, stars: 90, splash: 50, fireflies: 46, sparkle: 50, crystal: 60 };
-function setFx(m) {
-  if (m === mode && parts.length) return;
-  mode = m;
-  const n = Math.round((COUNTS[m] || 40) * (reduced ? .3 : 1) * Math.min(1, (W * H) / (1280 * 800) + .35));
-  parts = Array.from({ length: n }, () => spawn(m, true));
-  $("flash").classList.toggle("on", m === "rain" && !reduced && started);
-}
-function heart(x, y, r) {
-  cx.beginPath(); cx.moveTo(x, y + r * .3);
-  cx.bezierCurveTo(x, y - r * .3, x - r, y - r * .3, x - r, y + r * .25);
-  cx.bezierCurveTo(x - r, y + r * .75, x, y + r, x, y + r * 1.25);
-  cx.bezierCurveTo(x, y + r, x + r, y + r * .75, x + r, y + r * .25);
-  cx.bezierCurveTo(x + r, y - r * .3, x, y - r * .3, x, y + r * .3); cx.fill();
-}
+const spawn = () => ({ x: rnd(0, W), y: rnd(0, H), vx: rnd(-.3, .3), vy: rnd(-.4, .1), r: rnd(1.2, 3), ph: rnd(0, 6), life: 0 });
+parts = Array.from({ length: reduced ? 12 : 40 }, spawn);
 let last = performance.now();
-function frame(now) {
+(function frame(now) {
   const dt = Math.min(3, (now - last) / 16.7); last = now;
   cx.clearRect(0, 0, W, H);
-  for (let k = 0; k < parts.length; k++) {
-    const p = parts[k];
-    p.life += dt;
-    p.x += p.vx * dt; p.y += p.vy * dt;
-    const m = p.m;
-    if (m === "rain") {
-      cx.strokeStyle = "rgba(190,210,255,.45)"; cx.lineWidth = 1.2;
-      cx.beginPath(); cx.moveTo(p.x, p.y); cx.lineTo(p.x + p.vx * 1.4, p.y - p.len); cx.stroke();
-      if (p.y > H + 20) parts[k] = spawn(m, false);
-    } else if (m === "confetti" || m === "leaves") {
-      p.rot += p.vr * dt; p.x += Math.sin(p.life * .05 + k) * .4;
-      cx.save(); cx.translate(p.x, p.y); cx.rotate(p.rot); cx.fillStyle = p.c;
-      if (m === "confetti") cx.fillRect(-p.r, -p.r * .45, p.r * 2, p.r * .9);
-      else { cx.globalAlpha = .75; cx.beginPath(); cx.ellipse(0, 0, p.r, p.r * .45, 0, 0, 7); cx.fill(); }
-      cx.restore();
-      if (p.y > H + 20 || p.x > W + 20) parts[k] = spawn(m, false);
-    } else if (m === "hearts") {
-      p.x += Math.sin(p.life * .03 + p.ph) * .5;
-      cx.fillStyle = `rgba(255,111,143,${.35 + .25 * Math.sin(p.life * .05 + p.ph)})`;
-      heart(p.x, p.y, p.r);
-      if (p.y < -30) parts[k] = spawn(m, false);
-    } else if (m === "stars") {
-      const a = .35 + .55 * Math.abs(Math.sin(p.life * .025 + p.ph));
-      cx.fillStyle = `rgba(255,246,210,${a})`; cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, 7); cx.fill();
-    } else if (m === "splash") {
-      cx.fillStyle = "rgba(170,225,255,.45)"; cx.beginPath(); cx.arc(p.x, p.y, p.r, 0, 7); cx.fill();
-      if (p.y < -10) parts[k] = spawn(m, false);
-    } else {
-      const a = .25 + .65 * Math.abs(Math.sin(p.life * .03 + p.ph));
-      const g = cx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 5);
-      g.addColorStop(0, `rgba(${p.c},${a})`); g.addColorStop(1, `rgba(${p.c},0)`);
-      cx.fillStyle = g; cx.beginPath(); cx.arc(p.x, p.y, p.r * 5, 0, 7); cx.fill();
-      if (m !== "fireflies" && Math.sin(p.life * .03 + p.ph) > .97) {
-        cx.strokeStyle = `rgba(${p.c},.8)`; cx.lineWidth = 1;
-        cx.beginPath(); cx.moveTo(p.x - p.r * 4, p.y); cx.lineTo(p.x + p.r * 4, p.y); cx.moveTo(p.x, p.y - p.r * 4); cx.lineTo(p.x, p.y + p.r * 4); cx.stroke();
-      }
-      if (p.y < -20 || p.x < -20 || p.x > W + 20 || p.y > H + 20) parts[k] = spawn(m, true);
-    }
-  }
+  parts.forEach((p, k) => {
+    p.life += dt; p.x += p.vx * dt; p.y += p.vy * dt;
+    const a = .2 + .6 * Math.abs(Math.sin(p.life * .03 + p.ph));
+    const g = cx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 5);
+    g.addColorStop(0, `rgba(255,226,140,${a})`); g.addColorStop(1, "rgba(255,226,140,0)");
+    cx.fillStyle = g; cx.beginPath(); cx.arc(p.x, p.y, p.r * 5, 0, 7); cx.fill();
+    if (p.y < -20 || p.y > H + 30 || p.x < -20 || p.x > W + 20) parts[k] = Object.assign(spawn(), { y: H + 10 });
+  });
   requestAnimationFrame(frame);
-}
-setFx("fireflies");
-requestAnimationFrame(frame);
-
-/* ---------- start ---------- */
-function start(withAuto, autoLang) {
-  if (started) return;
-  started = true;
-  $("intro").classList.add("gone");
-  unlockVoice();
-  toggleMusic(true);
-  if (withAuto) {
-    // automatic reading in the chosen language(s): text + narration, pages turn by themselves
-    setLang(autoLang || "ar");
-    auto = true; $("autoBtn").setAttribute("aria-pressed", "true");
-    listen = true; $("listenBtn").setAttribute("aria-pressed", "true");
-  }
-  const m = firstStart ? /^#page-(\d+)$/.exec(location.hash) : null;
-  firstStart = false;
-  const startAt = m ? Math.min(LAST, +m[1]) : 1;
-  go(startAt, { force: true });
-}
-let firstStart = true;
-function goHome() {
-  stopSpeech(); clearTimeout(autoTimer);
-  auto = false; listen = false;
-  $("autoBtn").setAttribute("aria-pressed", "false");
-  $("listenBtn").setAttribute("aria-pressed", "false");
-  $("end").hidden = true; closeLight();
-  started = false;
-  $("intro").classList.remove("gone");
-  $("intro").scrollTop = 0;
-  setFx("fireflies"); $("flash").classList.remove("on");
-  try { history.replaceState(null, "", location.pathname + location.search); } catch (e) {}
-}
-$("homeBtn").onclick = goHome;
-$("endHome").onclick = goHome;
-$("startBtn").onclick = () => start(false);
-document.querySelectorAll("[data-auto]").forEach(b => b.onclick = () => start(true, b.dataset.auto));
-addEventListener("hashchange", () => {
-  const m = /^#page-(\d+)$/.exec(location.hash);
-  if (m && started && +m[1] !== idx) go(Math.min(LAST, +m[1]));
-});
-
-// first frame behind the intro: show the cover page so the reader is never empty
-renderPage(0, 1); renderStory(0);
-$("counter").textContent = `0 / ${LAST}`;
-[...prog.children][0].classList.add("cur");
-$("prevBtn").disabled = true;
+})(last);
 </script>
-
 </body>
 </html>
