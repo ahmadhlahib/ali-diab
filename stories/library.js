@@ -2,8 +2,15 @@
    To add a story: make stories/<id>/ (img/pNN.jpg, audio/<lang>NN.mp3, story.js) and add it here. */
 window.LIBRARY = [
  {
-  "id": "soldiers",
+  "id": "city",
   "isNew": true,
+  "langs": ["ar", "fr", "en"],
+  "pages": 10,
+  "title": { "ar": "علي دياب وأبطال البرق الثلاثة – سرّ المدينة الطائرة", "fr": "Ali Diab et les trois héros de l'éclair – Le secret de la cité volante", "en": "Ali Diab and the Three Lightning Heroes – The Secret of the Flying City" },
+  "alt": "Ali Diab, Baho, Luna et Yazan en armures au-dessus de Beyrouth, avec la cité volante dans le ciel"
+ },
+ {
+  "id": "soldiers",
   "langs": ["ar", "fr", "en"],
   "pages": 10,
   "title": { "ar": "علي دياب وجواد – جنود الوطن", "fr": "Ali Diab et Jawad – Les soldats de la patrie", "en": "Ali Diab and Jawad – Soldiers of the Homeland" },
